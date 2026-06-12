@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PESOS — Response Templates | Bosch Identity Team</title>
+  <link rel="icon" href="https://static-00.iconduck.com/assets.00/bosch-icon-2048x2048-se8sykum.png">
+  <link href="https://fonts.googleapis.com/css2?family=Bosch+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bosch-purple: #9e2896;
+    --bosch-purple-light: #f5e8f4;
+    --bosch-purple-border: rgba(158,40,150,0.25);
+    --text: #000000;
+    --text-muted: #555;
+    --text-dim: #888;
+    --border: #e0e0e0;
+    --bg: #ffffff;
+    --surface: #f7f7f7;
+    --surface2: #f0f0f0;
+    --sans: 'Bosch Sans', 'Segoe UI', Arial, sans-serif;
+    --mono: 'Courier New', monospace;
+    --radius: 6px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --font: var(--sans);
+    --sidebar-w: 240px;
+    --supergrafik-h: 8px;
+    --header-h: 72px;
+    --footer-h: 52px;
+    --transition: 0.18s ease;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Supergrafik ── */
+  .supergrafik-top {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: var(--supergrafik-h);
+    z-index: 1100;
+    overflow: hidden;
+  }
+  .supergrafik-top > div {
+    width: 100%; height: 100%;
+    background: linear-gradient(to right, #8b1a2e 0%, #a5243d 4%, #c0392b 8%, #c0392b 13%, #8e44ad 16%, #7d3c98 20%, #2c3e8c 25%, #1a237e 30%, #1565c0 36%, #1976d2 42%, #0288d1 48%, #0097a7 54%, #00838f 60%, #00acc1 66%, #26c6da 72%, #00bcd4 78%, #00897b 84%, #2e7d32 88%, #43a047 92%, #8bc34a 96%, #aed581 100%);
+  }
+
+  /* ── Header ── */
+  .header {
+    position: fixed;
+    top: var(--supergrafik-h);
+    left: 0; width: 100%;
+    z-index: 1000;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-h);
+    padding: 0 2.5rem;
+  }
+  .header-left { display: flex; align-items: center; gap: 20px; }
+  .bosch-logo { height: 28px; width: auto; }
+  .header-divider { width: 1px; height: 28px; background: var(--border); }
+  .header-title { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: 0.2px; }
+  .header-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .header-badge {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.6px;
+    text-transform: uppercase; color: var(--bosch-purple);
+    border: 1.5px solid var(--bosch-purple-border);
+    border-radius: 20px; padding: 3px 12px;
+    background: var(--bosch-purple-light);
+  }
+
+  /* ── App body (full height between header and footer) ── */
+  .app-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    margin-top: calc(var(--supergrafik-h) + var(--header-h));
+    height: calc(100vh - var(--supergrafik-h) - var(--header-h) - var(--footer-h));
+    background: var(--surface);
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-width: 180px;
+    background: #fff;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .sidebar-header { padding: 20px 16px 10px; }
+  .sidebar-search-row { margin-bottom: 16px; }
+  .sidebar-cat-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--text-dim);
+    padding: 0 16px 8px;
+  }
+
+  /* Search */
+  .search-box { position: relative; }
+  .search-box input {
+    width: 100%;
+    padding: 8px 30px 8px 32px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-family: var(--sans);
+    background: var(--surface);
+    color: var(--text);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    outline: none;
+  }
+  .search-box input:focus {
+    border-color: var(--bosch-purple);
+    background: #fff;
+    box-shadow: 0 0 0 3px var(--bosch-purple-light);
+  }
+  .search-box input::placeholder { color: #bbb; }
+  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #ccc; pointer-events: none; }
+  .search-clear {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: #ccc;
+    display: none; padding: 2px; border-radius: 50%;
+  }
+  .search-clear:hover { color: var(--text); }
+  .search-clear.visible { display: flex; align-items: center; }
+
+  /* Category nav */
+  .cat-nav { flex: 1; overflow-y: auto; padding: 0 0 16px; }
+  .cat-nav::-webkit-scrollbar { width: 3px; }
+  .cat-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .cat-nav-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 16px;
+    font-size: 13.5px; font-weight: 400; color: var(--text-muted);
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 0.13s, color 0.13s, border-color 0.13s;
+    user-select: none;
+    gap: 10px;
+  }
+  .cat-nav-item:hover { background: var(--surface2); color: var(--text); }
+  .cat-nav-item.active {
+    border-left-color: var(--bosch-purple);
+    background: var(--bosch-purple-light);
+    color: var(--text);
+    font-weight: 700;
+  }
+  .cat-nav-count { font-size: 11px; color: #bbb; font-weight: 400; }
+  .cat-nav-item.active .cat-nav-count { color: var(--bosch-purple); }
+  .cat-nav-divider { height: 1px; background: var(--surface2); margin: 3px 16px; }
+
+  /* Resize handle */
+  .resize-handle {
+    position: absolute; right: -3px; top: 0; bottom: 0;
+    width: 6px; cursor: col-resize; z-index: 10;
+  }
+  .resize-handle:hover::after {
+    content: ''; position: absolute; left: 2px; top: 0; bottom: 0;
+    width: 2px; background: var(--bosch-purple); opacity: 0.3; border-radius: 2px;
+  }
+
+  /* ── Main content ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--surface); }
+
+  .cat-header { padding: 24px 32px 0; background: var(--surface); flex-shrink: 0; }
+  .cat-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .cat-header-title { font-size: 1.4rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .cat-template-count {
+    font-size: 12px; color: var(--text-dim);
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 3px 10px; background: var(--surface2);
+  }
+  .cat-header-line { height: 2px; background: var(--bosch-purple); border-radius: 2px; }
+
+  /* Template cards scroll */
+  .templates-scroll {
+    flex: 1; overflow-y: auto;
+    padding: 20px 32px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .templates-scroll::-webkit-scrollbar { width: 4px; }
+  .templates-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* Template card */
+  .template-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .template-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.11); border-color: var(--bosch-purple-border); }
+
+  .template-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .template-card-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .btn-copy-card {
+    font-family: var(--sans);
+    font-size: 12px; font-weight: 700;
+    color: var(--bosch-purple);
+    background: var(--bosch-purple-light);
+    border: 1.5px solid var(--bosch-purple-border);
+    border-radius: var(--radius);
+    padding: 4px 14px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    letter-spacing: 0.3px;
+  }
+  .btn-copy-card:hover { background: #ead5e8; }
+  .btn-copy-card:active { transform: scale(0.96); }
+  .btn-copy-card.copied { color: #1a7c3e; background: #e8f5ee; border-color: rgba(26,124,62,0.3); }
+
+  .template-card-body { padding: 16px 18px; }
+  .template-card-text {
+    font-family: var(--mono);
+    font-size: 13.5px; line-height: 1.75; color: #333;
+    white-space: pre-wrap; word-break: break-word;
+    background: transparent; border: none;
+    width: 100%; resize: none; outline: none;
+    overflow: hidden;
+    min-height: unset;
+    height: auto;
+  }
+  .template-card-text::selection { background: var(--bosch-purple-light); }
+
+  /* ── Form-type card (Password Reset table) ── */
+  .pw-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+  .pw-table tr:first-child td { border-top: 1.5px solid #3a6b2a; }
+  .pw-table td {
+    border: 1.5px solid #3a6b2a;
+    padding: 0;
+  }
+  .pw-table .pw-label {
+    background: #2d5a1e;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 9px 16px;
+    width: 130px;
+    white-space: nowrap;
+  }
+  .pw-table .pw-value {
+    background: #1e3d14;
+    padding: 0;
+  }
+  .pw-table .pw-value input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 9px 14px;
+    letter-spacing: 0.3px;
+  }
+  .pw-table .pw-value input::placeholder { color: rgba(255,255,255,0.35); font-weight: 400; }
+  .pw-footer-text {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.75;
+    color: #333;
+    white-space: pre-wrap;
+    margin-top: 4px;
+  }
+  .pw-footer-text strong { font-weight: 700; }
+
+  /* Empty state */
+  .empty-state {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px; color: #aaa; padding: 40px; text-align: center;
+  }
+  .empty-state-icon {
+    width: 72px; height: 72px; background: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--border); margin-bottom: 4px;
+  }
+  .empty-state-icon svg { opacity: 0.25; }
+  .empty-state h3 { font-size: 16px; font-weight: 600; color: #666; }
+  .empty-state p { font-size: 13px; line-height: 1.65; max-width: 280px; }
+
+  .no-results-card { text-align: center; padding: 48px 20px; color: #aaa; }
+  .no-results-card svg { opacity: 0.2; margin-bottom: 12px; }
+  .no-results-card strong { display: block; font-size: 15px; margin-bottom: 6px; color: #666; }
+  .no-results-card p { font-size: 13px; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: calc(var(--footer-h) + 16px); right: 28px;
+    background: #1a1a1a; color: #fff;
+    padding: 11px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 9px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.22);
+    transform: translateY(16px); opacity: 0;
+    transition: all 0.25s cubic-bezier(0.34,1.4,0.64,1);
+    pointer-events: none; z-index: 999;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── Footer ── */
+  footer.main-footer {
+    background: #333; color: white;
+    padding: 0 2.5rem;
+    height: var(--footer-h);
+    display: flex; align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .footer-inner {
+    max-width: 1100px; margin: 0 auto; width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .footer-links { display: flex; gap: 1.5rem; list-style: none; }
+  .footer-links a { color: #ccc; text-decoration: none; font-size: 13px; }
+  .footer-links a:hover { text-decoration: underline; }
+  .footer-copyright { font-size: 12px; color: #aaa; }
+
+  .footer-creator {
+    background: linear-gradient(90deg, #1a1a1a 0%, #2d0a2b 50%, #1a1a1a 100%);
+    text-align: center; padding: 8px 2.5rem;
+    border-top: 1px solid rgba(158,40,150,0.3);
+    flex-shrink: 0;
+  }
+  .footer-creator-inner { display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px; letter-spacing: 0.4px; }
+  .footer-craft { color: #888; font-family: var(--sans); }
+  .footer-heart { color: var(--bosch-purple); font-size: 13px; animation: heartbeat 1.6s ease-in-out infinite; }
+  .footer-author { color: #e0b8df; font-weight: 700; font-family: var(--sans); letter-spacing: 0.5px; }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); } 14% { transform: scale(1.25); }
+    28% { transform: scale(1); } 42% { transform: scale(1.15); } 56% { transform: scale(1); }
+  }
+
+  @media (max-width: 768px) {
+    .app-body { flex-direction: column; height: auto; overflow: visible; }
+    .sidebar { width: 100%; min-width: unset; border-right: none; border-bottom: 1px solid var(--border); }
+    .main { overflow: visible; }
+    .templates-scroll { overflow: visible; }
+    .header { padding: 0 1rem; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .footer-links { flex-direction: column; gap: 0.75rem; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- Supergrafik -->
+<div class="supergrafik-top"><div></div></div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <a href="https://www.bosch.com" target="_blank">
+      <img class="bosch-logo"
+        src="https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYm9zY2hcL2FjY291bnRzXC9hNVwvNDAwMDA5OFwvcHJvamVjdHNcLzIyOVwvYXNzZXRzXC8xYlwvMTE0MDUxXC9mMTQyMWFiZDVhODY2MzljOGM0ZjJlM2FiZjQ3MWFlYi0xNTkwNzQ2MjY1LnN2ZyJ9:bosch:lFhI6BBD0LVPSURyRBjLLsVySpt3hxhyE95UqXOfrOY?width=160&rect=0,0,160,36&reference_width=160"
+        alt="Bosch Logo">
+    </a>
+    <div class="header-divider"></div>
+    <div>
+      <div class="header-title">PESOS</div>
+      <div class="header-subtitle">Pesos — Response Templates</div>
+    </div>
+  </div>
+  <span class="header-badge">Internal Tool</span>
+</header>
+
+<!-- App Body -->
+<div class="app-body">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-search-row">
+        <div class="search-box">
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" placeholder="Search templates…" oninput="onSearch(this.value)" autocomplete="off">
+          <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Clear">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-cat-label">Categories</div>
+    <nav class="cat-nav" id="catNav"></nav>
+    <div class="resize-handle" id="resizeHandle"></div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main" id="mainArea">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-state-icon">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <h3>Select a Category</h3>
+      <p>Choose a category from the left to browse and copy templates.</p>
+    </div>
+    <div id="categoryView" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
+      <div class="cat-header">
+        <div class="cat-header-row">
+          <span class="cat-header-title" id="catHeaderTitle"></span>
+          <span class="cat-template-count" id="catHeaderCount"></span>
+        </div>
+        <div class="cat-header-line"></div>
+      </div>
+      <div class="templates-scroll" id="templateCards"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  Template copied to clipboard!
+</div>
+
+<!-- Footer -->
+<footer class="main-footer">
+  <div class="footer-inner">
+    <ul class="footer-links">
+      <li><a href="https://www.bosch.com/corporate-information/" target="_blank">Corporate Information</a></li>
+      <li><a href="https://www.bosch.com/legal-notice/" target="_blank">Legal Notice</a></li>
+      <li><a href="https://www.bosch.com/data-protection-notice/" target="_blank">Data Privacy</a></li>
+    </ul>
+    <div class="footer-copyright">&copy; Robert Bosch GmbH 2026, all rights reserved</div>
+  </div>
+</footer>
+<div class="footer-creator">
+  <span class="footer-creator-inner">
+    <span class="footer-craft">Designed &amp; Developed by</span>
+    <span class="footer-author">Santhosh Kumar Kannan (SO/OPM212-IN)</span>
+  </span>
+</div>
+
+<script>
+const templates = [
+  { title:"Closing Without any Process", category:"communication", content:`Dear Customer,\n\nAs we attempted to contact the customer but did not receive any response, we are proceeding to close this ticket without any further action.\n\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Acknowledge Mail", category:"communication", content:`Dear Customer,\n \nThank you for reaching out to us.\nWe've successfully received your request concerning "[Ticket Type]". Your reference number is [XXX].\n \nOur team is now reviewing your submission and will get back to you with an update as soon as possible. We appreciate your patience and look forward to assisting you.\n \nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Pending for Customer Response", category:"communication", content:`Dear Customer,\n\nWe hope this message finds you well. We wanted to follow up regarding your recent ticket and check if the issue has been resolved to your satisfaction. Could you please confirm whether you require any further assistance?\n\nYour feedback is important to us, and we want to ensure that your experience has been positive. Should you have any additional questions or concerns, please don't hesitate to reach out. We're here to help!\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Request More Information", category:"communication", content:`Dear Customer,\n\nThank you for contacting IT Personal Service. Your request has been received however there are some requirements that are missing from your request and need to be fulfilled before we can proceed.\n\nCould you please provide us with the following information?\n[Missing information]\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"No Changes Required", category:"communication", content:`Dear Customer,\n\nThank you for contacting IT Personal Service.\nAs per the details provided, the information is already updated. \nNo changes are required.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Ticket Resolved and Closed", category:"communication", content:`Dear Customer,\n\nThank you for contacting IT Personal Service. \nThe issue has been resolved and the ticket is being closed. Please feel free to reopen if you encounter any further issues.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Work Location Change on Specific Date", category:"location", content:`Dear Customer,\n\nAs per your request to change the working location to Clj, and based on the date you mentioned (23-02-2026), we will proceed with the request on the specified date.\n\nBest regards,\nIT Personal Service` },
+  { title:"Work Location Updated – No Documentation for Role", category:"location", content:`Hi Team,\n\nAs per the user's request, the work location has been updated to COB. The Admin, Office, and Building details have already been updated accordingly.\n\nKindly take over and proceed with assigning the specific roles for this user, as we do not have the required documentation to assign the roles from our end.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Location Change In Another Domain", category:"location", content:`Dear Customer,\n \nUser Transfer has been initiated for the userid <user id> in CI-CAT.\n\nHallo,\nder Umzug wurde für den NT-Benutzer < user id> beauftragt.\nAnd please refer below points for your kind information.\nBitte beachten Sie noch folgende Punkte: \n \n1. It will take some days until all changes of the locations are processed\nEs kann ein paar Tage dauern, bis alle Änderungen für den Umzug verarbeitet und angezeigt werden \n\n2.Please always use your UPN: user-id@bosch.com for login to your device (e.g. xyz3fe@bosch.com).\nBitte verwenden Sie zum Anmelden am Rechner immer den UPN: user-id@bosch.com (z.B. xyz3fe@bosch.com).\n\n3. Since SMTP address will be changed user has to apply for an update of email encryption.\nhttps://inside-docupedia.bosch.com/confluence2/x/yiR0DQ\nDa sich die primäre SMTP Adresse geändert hat, muss für den Mitarbeiter die Änderung an der Emailverschlüsselung beantragt werden:\nhttps://inside-docupedia.bosch.com/confluence2/x/yiR0DQ\n\n4. User personal drive(U Drive) will be migrated to the new location.\nDas persönliche Laufwerk (U:\\) wird beim Umzug ebenfalls migriert. \n\n5. For users using a public telephony number: Please be aware that you need to check if the number is still applicable to your new location and change it if the number does not match to your new location. Please use ITSP for that.\nFür Anwender mit Public Telephony: Bitte prüfen Sie, ob Ihre Rufnummer an Ihrem neuen Standort weiter genutzt werden darf. Andernfalls beantragen Sie bitte eine Rufnummer Ihres neuen Standorts über ITSP.\nPublic Telephony (Teams, Skype for Business, Avaya)\n \nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"New User Configured – Waiting for Roles", category:"user", content:`Dear Customer,\n \nNew user- SAV3AV has been configured. Currently we are awaiting to assign location specific roles to the account. Once the request is fulfilled, you will be receiving new password from IT Service Portal.\n \nDisplay name- Silva Alexandre (AvP/LOG1)\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"User Transition", category:"user", content:`Dear Customer,\n\nCurrently, the user account- JCD6FE is in email migration state and cannot be modified. So, the ticket is in pending state. Once the transition is completed, category of account will be changed to EXU1 and M365 E3 license will be assigned.\n \nEstimation date to complete: 3-7 days\n \nMore about transition state- User ID: JCD6FE has been under mailbox migration to the Exchange Online mailbox\n \nThe user currently is in email migration process. The "User is currently in transition" status in CI-CAT application is reflecting this process. During this time, any modification regarding emails is greyed out.\n \nThis process starts from Exchange Server, then to AD and CI-CAT. This process will be completed within 3-7 days depending on the user.\nAfter the process is completed, then the data among the 3 systems are synced, the transition status will automatically be removed, and we can carry on with the modifications.\n \n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"User Type Change", category:"user", content:`Dear Customer,\n\nAs you requested to change the user type from exu4 to exu1 has been updated. waiting for E3 License to assign .\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Compas Team Reentry Date", category:"user", content:`Hello Team,\n\nAs per our check, the user has been marked as COMPAS deleted. Kindly confirm if there is any re-entry date available for this user.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"External to Internal Change – GID/PNR Required", category:"user", content:`Dear Customer,\n \nIn order to convert External user- USER ID to Internal, GID/PNR- Personnel Number is required. This information can be provided by the HR. Could you please assist us with GID/PNR?\n \nMit freundlichen Grüße / Best regards\nIT Personal Service` },
+  { title:"HR Ticket Required", category:"user", content:`Dear Customer,\n\nFor Your kind information we don't have the access to update Department for COMPAS managed user. \nkindly open a HR Ticket.\nhttps://inside.bosch.com/irj/portal?NavigationTarget=navurl://334c4e872d0993099e373657c8f8b8c8\nPlease refer the docupedia for reference\nhttps://inside-docupedia.bosch.com/confluence/display/AnPHRL/HR+Self+Services\nOnce the request has been fulfilled, the display name will auto-updated.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Downgrade Standard to Base", category:"user", content:`Dear Customer,\n\nWe have received the request to change user category from Standard IT -> Base IT user.\n\nBefore modifying the category of user, could you please go through below points and confirm us to proceed.\n\nBusiness Rules\n\n1.        Login via Shared PC only (technical description)\n\n2.        Admin account / additional NT id creation not possible\n\n3.        Home Drive / U drive creation not possible\n\n4.        Secretariat and Secr. Phone Number cannot be updated\n\n5.        Mail address / SMTP cannot be restricted to inside bosch\n\n6.        Additional mail address not allowed\n\n7.        FAX number not allowed\n\n\nDocupedia : https://inside-docupedia.bosch.com/confluence/x/MW7OP\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"New Bosch User", category:"user", content:`Dear Customer,\n\nThe new Bosch user <user id> has been configured. Your user credential details sent via separate mail from the IT Service Portal.\nSome basic IdM accounts / roles according the selected location have been already assigned.\nIdM roles will be assigned within one working day once your user profile is replicated in IdM.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Password Reset", category:"user", type:"form", fields:[{label:"User-ID",placeholder:"DE\\EUJ3FE"},{label:"Password",placeholder:"gkujqoFthyf5"}], footer:"Mit freundlichen Grüßen / Best regards\nIT Personal Service" },
+  { title:"Roles For BR Domain", category:"location", content:`Dear Customer,\nThe new user has been configured as RIA7CT. Kindly raise a new request for the location-specific roles.\nHence, we are proceeding with the closure of this ticket.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"ECU User Takeover", category:"user", content:`Hello Team,\n\nAs per our check, this user belongs to ECU. Kindly request you to take over and proceed with the further process.\n\nMit freundlichen Grüßen / Best regards,\nIT Personal Service` },
+  { title:"Madame User Department Change", category:"user", content:`Hello Team,\n\nUpon checking, we found that the user is Manager Managed, and the customer has requested a department change to BSH CN/CS-CCN4.\nKindly take over the ticket and proceed with the necessary actions to complete the requested change.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Domain Change", category:"user", content:`Dear Customer,\n\nThe location of the account- JIM7JH is already updated to Jh.\n\nAs per the recent process update (CD02900), domain migration activity is stopped in the system. Kindly let us know if you are facing any issues so we can check with field services team.\n\nThe user still needs to logon to a device via the DE domain: DE\\user-id or as recommended use the UPN user-id@bosch.com.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Mailbox Cannot Be Deleted", category:"mailbox", content:`Dear Customer,\n\nAs per your request to delete the mailbox for the RR116ST resource account, we have checked the request.\nAs per the standard norms, once a mailbox is created for a resource account, it cannot be deleted.\nTherefore, we are closing this ticket.\nIf you still need the mailbox to be removed, kindly delete the existing resource account and create a new resource account without a mailbox using the link below:\nNew Bosch Identity/User – Person:\nhttps://service-management.bosch.tech/sp?id=sc_cat_item&table=sc_cat_item&sys_id=c6f2ad431b1b1d1080…\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Shared Mailbox – Resource Type Info", category:"mailbox", content:`KF65HA3 is a shared mailbox resource. Shared mailboxes are deactivated by default and cannot be logged in using password. Only members of the associated access control group can access the shared mailbox on Outlook. In order for you to use this account to login in other platforms, the resource type should be changed to user mailbox.\n\nPlease see the docupedia to see other types of resources-\nhttps://inside-docupedia.bosch.com/confluence/display/NGW/Non+Person+User\n\nCurrent type- NPU4\nSuggestion- NPU2, either system/shared/Test/BOT account.\n\nMore information on shared mailboxes (NPU4)-\nhttps://inside-docupedia.bosch.com/confluence/display/NGW/Customer+information\n\nKindly let us know if resource type is required.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Change Recipient Type", category:"mailbox", content:`Hello Team,\n\nKindly change the recipient type of the resource- ITS8BI from "RemoteSharedmailbox" to "RemoteUsermailbox".\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Convert Resource to Shared Mailbox", category:"mailbox", content:`Hello Team,\n \nPlease convert the resource to a shared mailbox.\n \nMailbox Display Name             :CustomerService NL (BT/LOP1-EU)\nMailbox NT Id                            : EMEA\\CUN2EIN      \nAccess control group(DL )      :  Shared_CustomerService_NL \nAdditional rights for the distribution list: send as\n \nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Access Control", category:"mailbox", content:`Dear Customer,\n\nBelow resource account has been created in CI-CAT and ITSP Order <ITSP order no> has been raised for creating the access control group(DL).\nOnce the ITSP Order has been completed, Ticket will be further routed to respective team in order to convert the resource account to a shared mailbox.\nAnd you will get the information once the process has been completed. \n\nMailbox Display Name             :\nMailbox NT Id                    :        \nAccess control group(DL )        :     \n     \nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Resource Owner Change", category:"mailbox", content:`Hello All,\n \nFYI, as requested through RITM007747036, the ownership of the resource: QUE1CLJ- Quality Leads (ME/QMM-CljP) is transferred from Alexandra Coman to Bulent Iyitanir.\n \nMit freundlichen Grüße / Best regards\nIT Personal Service` },
+  { title:"CD For Display Name", category:"user", content:`Dear Customer,\n\nAs per your request to add the Org.Unit "XC-CE/DFE" to the display name, we would like to inform you that this change is not valid.\nAccording to C-Directive 02900-014 for organizational offices, only positions provided by COMPAS are permitted to be included in the display name. Any exceptions or deviations from these regulations must be explicitly approved by the DDO of Identity Master Data (C/CM). For exemption requests, you may contact C/ISP-IS.\nTherefore, we are closing this ticket without further action.\nThank you for your understanding.\n\nMit freundlichen Grüßen / Best regards,\nIT Personal Service` },
+  { title:"BSH Identity Team – Location Sync", category:"location", content:`Hello Team,\n\nAs per the request, the working location has been updated to NST. Kindly take over and proceed with the synchronization in the BSH site.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Request Cannot Be Held More Than 30 Days", category:"location", content:`Dear Customer,\n\nWe have received your request and observed that the working location transfer date mentioned is 01-07-2026.\nAs per our standards, we cannot keep the ticket open for more than 30 days without processing. Therefore, we kindly request you to raise a new request one week prior to the location transfer date.\nHence, we are closing this request without further processing.\n\nMit freundlichen Grüßen / Best regards,\nIT Personal Service` },
+  { title:"Manual User Creation For Madame User", category:"user", content:`Hello Team,\n\nWe cannot create an Internal MADAME managed user, could you please check and assist with the creation of the user.\n\nUser PID: 5495634\nUser GID: 99111026\nLast name: Lu\nFirst name: Jack-Tianyi\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Restoration Template", category:"user", content:`Digital is Mandatory\n\nTicket Number: INC000543183\nHint:\nthe first manager (normally the group or department manager) needs to approve the restore request with this mail digitally signed.\nIf these managers are not available for signing please go one step up in the hierarchy chart.\nNo substitute for a manager is allowed to request the restore\n\nHierarchy chart:\nhttp://fe0vmc1134.de.bosch.com/org.manager.server_P/index.html\n(you can use the "global search" to search for employee name to display the manager and the black arrow to go one step up)\n\n\nDear Manager,\n\nPlease approve the AD user/group object restoration with mailbox reconnection.\nPlease restore the deleted AD Object.\nI confirm the former account – CNG6FE is a member of my department (employee, FIXED-TERM, EXTERNAL) and only he/she has access to the user account.\nHint: it is just possible within the first 60 days after the deletion\naccount (e.g. DE\\ CNG6FE)\n\nPlease reconnect the deleted mailbox.\nI confirm the former account - CNG6FE of the mailbox is a member of my department (employee, FIXED-TERM, EXTERNAL) and only he/she has access to the user account.\nHint: it is possible within the first 24 days after the deletion\n--> does exist\n--> does not have a mailbox connected\n\nDisplay name before deletion- EXTERNAL Engert Sonja (Freelancer, BD/UXD)\n--> this is the search criteria in the list of deleted mailboxes\n--> must be consistent to given and family name of the account\n\nPrimary SMTP address\n--> a system generated SMTP address is used if omitted, this address can be changed using CI-CAT after the replication is completed (up to two days after reconnect)\n--> non-bcn addresses are known to the firewall within 24 hours, until then no email from the Internet can be delivered\n--> the Offline Address Book is updated within 24 hours\n\nCost Center – Please add cost center\nHint to ITSD: Please attach this digitally signed email (not encrypted) to the ticket. Digitally signed emails have a red badge in the right upper corner of the .msg file.\nHint to ITSD: Please create a ticket (Script: Restore Object_EN), attach this digitally signed email and route the ticket to solution group "Directory Service Infrastructure Operation".\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` },
+  { title:"Information Updated", category:"update", content:`Dear Customer,\n\nInformation has been updated.\nPlease note that the replication may take up to 72 hrs in Outlook address book.\n\nMit freundlichen Grüßen / Best regards\nIT Personal Service` }
+];
+
+const categoryLabels = {
+  communication: 'Communication',
+  location:      'Location',
+  user:          'User',
+  mailbox:       'Mailbox',
+  update:        'Update'
+};
+
+let activeCategory = null;
+let searchQuery = '';
+
+function buildCatNav() {
+  const nav = document.getElementById('catNav');
+  nav.innerHTML = '';
+  const cats = Object.keys(categoryLabels);
+  cats.forEach((cat, i) => {
+    const count = templates.filter(t => t.category === cat).length;
+    const item = document.createElement('div');
+    item.className = 'cat-nav-item' + (activeCategory === cat ? ' active' : '');
+    item.dataset.cat = cat;
+    item.innerHTML = `<span>${categoryLabels[cat]}</span><span class="cat-nav-count">${count}</span>`;
+    item.onclick = () => selectCategory(cat);
+    nav.appendChild(item);
+    if (i < cats.length - 1) {
+      const div = document.createElement('div');
+      div.className = 'cat-nav-divider';
+      nav.appendChild(div);
+    }
+  });
+}
+
+function selectCategory(cat) {
+  activeCategory = cat;
+  buildCatNav();
+  renderCards();
+}
+
+function onSearch(val) {
+  searchQuery = val.toLowerCase().trim();
+  document.getElementById('searchClear').classList.toggle('visible', val.length > 0);
+  if (searchQuery) {
+    activeCategory = '__search__';
+    buildCatNav();
+  } else if (activeCategory === '__search__') {
+    activeCategory = null;
+    buildCatNav();
+  }
+  renderCards();
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  onSearch('');
+  document.getElementById('searchInput').focus();
+}
+
+function renderCards() {
+  const emptyState = document.getElementById('emptyState');
+  const catView = document.getElementById('categoryView');
+  let filtered;
+  if (searchQuery) {
+    filtered = templates.filter(t =>
+      t.title.toLowerCase().includes(searchQuery) ||
+      (t.content || '').toLowerCase().includes(searchQuery)
+    );
+  } else if (activeCategory && activeCategory !== '__search__') {
+    filtered = templates.filter(t => t.category === activeCategory);
+  } else {
+    emptyState.style.display = 'flex';
+    catView.style.display = 'none';
+    return;
+  }
+  emptyState.style.display = 'none';
+  catView.style.display = 'flex';
+  const title = searchQuery ? `Search: "${searchQuery}"` : categoryLabels[activeCategory] || activeCategory;
+  document.getElementById('catHeaderTitle').textContent = title;
+  document.getElementById('catHeaderCount').textContent = filtered.length + ' template' + (filtered.length !== 1 ? 's' : '');
+  const container = document.getElementById('templateCards');
+  container.innerHTML = '';
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="no-results-card">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <strong>No templates found</strong>
+      <p>Try a different search term or category.</p>
+    </div>`;
+    return;
+  }
+  filtered.forEach((t, idx) => {
+    const card = document.createElement('div');
+    card.className = 'template-card';
+    card.style.animation = `slideUp 0.18s ease ${idx * 0.04}s both`;
+    const labelText = (searchQuery ? (categoryLabels[t.category] + ' — ') : '') + t.title.toUpperCase();
+
+    if (t.type === 'form') {
+      // Render interactive form card (e.g. Password Reset table)
+      const cardId = 'fcard_' + idx;
+      const rows = t.fields.map((f, fi) => `
+        <tr>
+          <td class="pw-label">${escHtml(f.label)}</td>
+          <td class="pw-value"><input type="text" id="${cardId}_f${fi}" placeholder="${escHtml(f.placeholder)}" autocomplete="off"></td>
+        </tr>`).join('');
+      const footerHtml = t.footer
+        ? t.footer.replace(/\n(IT Personal Service)/, '\n<strong>$1</strong>').replace(/\n/g, '<br>')
+        : '';
+      card.innerHTML = `
+        <div class="template-card-header">
+          <span class="template-card-label">${labelText}</span>
+          <button class="btn-copy-card" onclick="copyFormCard('${cardId}', ${JSON.stringify(t.fields.map(f=>f.label))}, ${JSON.stringify(t.footer||'')}, this)">Copy</button>
+        </div>
+        <div class="template-card-body">
+          <table class="pw-table">${rows}</table>
+          <div class="pw-footer-text">${footerHtml}</div>
+        </div>`;
+    } else {
+      // Standard textarea card
+      const textareaId = 'tcard_' + idx;
+      card.innerHTML = `
+        <div class="template-card-header">
+          <span class="template-card-label">${labelText}</span>
+          <button class="btn-copy-card" onclick="copyCard('${textareaId}', this)">Copy</button>
+        </div>
+        <div class="template-card-body">
+          <textarea class="template-card-text" id="${textareaId}" spellcheck="false">${escHtml(t.content)}</textarea>
+        </div>`;
+    }
+    container.appendChild(card);
+  });
+
+  // Auto-expand all textareas to full content height
+  container.querySelectorAll('.template-card-text').forEach(ta => {
+    ta.style.height = 'auto';
+    ta.style.height = ta.scrollHeight + 'px';
+  });
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function copyFormCard(cardId, labels, footer, btn) {
+  const lines = labels.map((label, fi) => {
+    const val = document.getElementById(cardId + '_f' + fi)?.value || '';
+    return label + ': ' + val;
+  });
+  const text = lines.join('\n') + (footer ? '\n\n' + footer : '');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    showToast();
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyCard(textareaId, btn) {
+  const ta = document.getElementById(textareaId);
+  navigator.clipboard.writeText(ta.value).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    showToast();
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Sidebar resize
+(function() {
+  const handle = document.getElementById('resizeHandle');
+  const sidebar = document.getElementById('sidebar');
+  let dragging = false, startX, startW;
+  handle.addEventListener('mousedown', e => {
+    dragging = true; startX = e.clientX; startW = sidebar.offsetWidth;
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const w = Math.min(480, Math.max(180, startW + (e.clientX - startX)));
+    sidebar.style.width = w + 'px';
+    sidebar.style.minWidth = w + 'px';
+  });
+  document.addEventListener('mouseup', () => {
+    dragging = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  });
+})();
+
+buildCatNav();
+renderCards();
+</script>
+</body>
+</html>
